@@ -1,0 +1,395 @@
+@import "tailwindcss";
+
+/* Neutralize the dark variant completely so dark: classes never trigger via system prefers-color-scheme or stray classes */
+@variant dark (&:where([data-theme="disabled-dark-mode-never"]));
+
+@layer base {
+  :root,
+  .dark {
+    --bg-page: #F7F3EA;
+    --bg-surface: #FCF9F3;
+    --bg-nav: #F0F8FD;
+    --border-nav: #D4E8F5;
+    --nav-active-bg: #D4EBF9;
+    --nav-active-text: #123F63;
+
+    /* Primary Institutional Sky Blue */
+    --primary-sky: #2F8FCC;
+    --primary-sky-hover: #1E75AC;
+    --primary-sky-dark: #123F63;
+    --text-sky-dark: #123F63;
+    --text-institutional: #16466F;
+    --text-muted: #627B94;
+
+    /* Controlled Pastel Surfaces */
+    --card-sky-bg: #EDF8FE;
+    --card-sky-border: #CFE5F5;
+    --card-sky-icon-bg: #D5EEFB;
+    --card-sky-icon-text: #1E75AC;
+
+    --card-lavender-bg: #F3F1FE;
+    --card-lavender-border: #E0DCFB;
+    --card-lavender-icon-bg: #E6E1FD;
+    --card-lavender-icon-text: #5B5FC7;
+
+    --card-mint-bg: #EFFAF4;
+    --card-mint-border: #CDEFE0;
+    --card-mint-icon-bg: #D4F6E5;
+    --card-mint-icon-text: #1E8E5A;
+
+    --card-amber-bg: #FFF7E8;
+    --card-amber-border: #FCE3BA;
+    --card-amber-icon-bg: #FEEDC8;
+    --card-amber-icon-text: #B86C0B;
+
+    --card-neutral-bg: #F5FAFD;
+    --card-neutral-border: #DCEAF4;
+
+    --primary-navy: #16466F;
+    --dark-navy-text: #123F63;
+    --primary-blue: #1E75AC;
+    --soft-blue: #EAF6FD;
+    --light-blue: #F2F9FD;
+    --success-green: #1E8E5A;
+    --soft-green: #EFFAF4;
+    --warning-amber: #B86C0B;
+    --soft-amber: #FFF7E8;
+    --danger-red: #D95C59;
+    --soft-red: #FFF2F2;
+    --primary-text: #16466F;
+    --secondary-text: #627B94;
+    --border-color: #E8E3D9;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--primary-text);
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom Soft Shadows matching the reference visual feel */
+.shadow-soft {
+  box-shadow: 0 4px 20px rgba(18, 63, 99, 0.07);
+}
+
+.shadow-soft-lg {
+  box-shadow: 0 10px 30px -4px rgba(18, 63, 99, 0.09), 0 4px 12px -2px rgba(18, 63, 99, 0.04);
+}
+
+.shadow-soft-card {
+  box-shadow: 0 2px 14px 0 rgba(18, 63, 99, 0.04);
+}
+
+/* ==========================================================================
+   PERIMETER PASTEL SYSTEM UTILITY CLASSES
+   ========================================================================== */
+.card-sky {
+  background-color: #EDF8FE !important;
+  border-color: #CFE5F5 !important;
+}
+
+.card-lavender {
+  background-color: #F3F1FE !important;
+  border-color: #E0DCFB !important;
+}
+
+.card-mint {
+  background-color: #EFFAF4 !important;
+  border-color: #CDEFE0 !important;
+}
+
+.card-amber {
+  background-color: #FFF7E8 !important;
+  border-color: #FCE3BA !important;
+}
+
+.card-neutral-blue {
+  background-color: #F5FAFD !important;
+  border-color: #DCEAF4 !important;
+}
+
+.card-greeting {
+  background: linear-gradient(135deg, #EBF5FD 0%, #F5FAFE 60%, #E8F4FC 100%) !important;
+  border-color: #CCE3F3 !important;
+}
+
+/* ==========================================================================
+   GLOBAL INTERACTION & MICRO-INTERACTION SYSTEM (WARM CREAM GOVTECH)
+   ========================================================================== */
+
+/* Universal Accessible Focus State */
+:focus-visible {
+  outline: 2px solid #17689A;
+  outline-offset: 2px;
+}
+
+/* Cursor pointer for all interactive elements */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+select:not(:disabled),
+summary,
+input[type="checkbox"]:not(:disabled),
+input[type="radio"]:not(:disabled),
+input[type="submit"]:not(:disabled),
+input[type="button"]:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"],
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Base interactive transitions */
+button,
+[role="button"],
+a,
+input,
+select,
+textarea {
+  transition: background-color 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Form Controls: Input, Select, Textarea polish */
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+select,
+textarea {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):hover:not(:disabled):not(:focus),
+select:hover:not(:disabled):not(:focus),
+textarea:hover:not(:disabled):not(:focus) {
+  border-color: #B8C7D6;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #17689A !important;
+  box-shadow: 0 0 0 3px rgba(23, 104, 154, 0.18) !important;
+}
+
+/* Primary Button Global Polish (bg-[#17689A] and bg-[#1769AA]) */
+.btn-primary,
+button.bg-\[\#17689A\],
+a.bg-\[\#17689A\],
+button.bg-\[\#1769AA\],
+a.bg-\[\#1769AA\] {
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+
+.btn-primary:hover:not(:disabled),
+button.bg-\[\#17689A\]:hover:not(:disabled),
+a.bg-\[\#17689A\]:hover,
+button.bg-\[\#1769AA\]:hover:not(:disabled),
+a.bg-\[\#1769AA\]:hover {
+  background-color: #145984 !important;
+  box-shadow: 0 6px 18px -2px rgba(23, 104, 154, 0.28) !important;
+  transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled),
+button.bg-\[\#17689A\]:active:not(:disabled),
+a.bg-\[\#17689A\]:active,
+button.bg-\[\#1769AA\]:active:not(:disabled),
+a.bg-\[\#1769AA\]:active {
+  background-color: #11486B !important;
+  box-shadow: 0 2px 6px rgba(23, 104, 154, 0.2) !important;
+  transform: translateY(0) scale(0.98);
+}
+
+/* Secondary / Outline Button Global Polish */
+.btn-secondary {
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #EAF3F8 !important;
+  border-color: #17689A !important;
+  color: #16466F !important;
+  box-shadow: 0 4px 12px rgba(30, 50, 70, 0.05);
+}
+
+.btn-secondary:active:not(:disabled) {
+  background-color: #DDEBF4 !important;
+  transform: scale(0.98);
+}
+
+/* Success Green Action Buttons */
+button.bg-\[\#2EAD7B\],
+button.bg-\[\#36B37E\],
+a.bg-\[\#2EAD7B\],
+a.bg-\[\#36B37E\] {
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+button.bg-\[\#2EAD7B\]:hover:not(:disabled),
+button.bg-\[\#36B37E\]:hover:not(:disabled),
+a.bg-\[\#2EAD7B\]:hover,
+a.bg-\[\#36B37E\]:hover {
+  background-color: #279669 !important;
+  box-shadow: 0 6px 18px -2px rgba(46, 173, 123, 0.28) !important;
+  transform: translateY(-1px);
+}
+
+button.bg-\[\#2EAD7B\]:active:not(:disabled),
+button.bg-\[\#36B37E\]:active:not(:disabled),
+a.bg-\[\#2EAD7B\]:active,
+a.bg-\[\#36B37E\]:active {
+  background-color: #1F7D57 !important;
+  transform: translateY(0) scale(0.98);
+}
+
+/* Amber Action Buttons */
+button.bg-\[\#D99A32\],
+a.bg-\[\#D99A32\] {
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+button.bg-\[\#D99A32\]:hover:not(:disabled),
+a.bg-\[\#D99A32\]:hover {
+  background-color: #BF8528 !important;
+  box-shadow: 0 6px 18px -2px rgba(217, 154, 50, 0.28) !important;
+  transform: translateY(-1px);
+}
+
+button.bg-\[\#D99A32\]:active:not(:disabled),
+a.bg-\[\#D99A32\]:active {
+  background-color: #A36F1F !important;
+  transform: translateY(0) scale(0.98);
+}
+
+/* Clickable Cards */
+.card-interactive,
+.card-clickable,
+a[class*="rounded-3xl bg-white"][class*="shadow-soft-card"],
+a[class*="rounded-2xl bg-white"][class*="shadow-soft-card"] {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s ease,
+              border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.card-interactive:hover,
+.card-clickable:hover,
+a[class*="rounded-3xl bg-white"][class*="shadow-soft-card"]:hover,
+a[class*="rounded-2xl bg-white"][class*="shadow-soft-card"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -4px rgba(30, 50, 70, 0.09), 0 4px 10px -2px rgba(30, 50, 70, 0.04);
+  border-color: #C5D8E8;
+}
+
+.card-interactive:active,
+.card-clickable:active,
+a[class*="rounded-3xl bg-white"][class*="shadow-soft-card"]:active,
+a[class*="rounded-2xl bg-white"][class*="shadow-soft-card"]:active {
+  transform: translateY(-0.5px) scale(0.99);
+}
+
+/* Clickable Table Rows and List Items */
+.table-row-clickable,
+tr.row-clickable,
+div.cursor-pointer[class*="hover\:bg-\[\#FAF7F0\]"] {
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.table-row-clickable:hover,
+tr.row-clickable:hover,
+div.cursor-pointer[class*="hover\:bg-\[\#FAF7F0\]"]:hover {
+  background-color: #F0F6FA !important;
+}
+
+.table-row-clickable:active,
+tr.row-clickable:active,
+div.cursor-pointer[class*="hover\:bg-\[\#FAF7F0\]"]:active {
+  background-color: #E4EFF7 !important;
+}
+
+/* Icon Buttons */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  cursor: pointer;
+}
+
+.btn-icon:hover:not(:disabled) {
+  background-color: #EAF3F8;
+  color: #16466F;
+  border-color: #C5D8E8;
+}
+
+.btn-icon:active:not(:disabled) {
+  background-color: #DDEBF4;
+  transform: scale(0.96);
+}
+
+/* Text Links */
+.link-interactive,
+a.hover\:underline {
+  transition: color 0.15s ease;
+}
+
+.link-interactive:hover,
+a.hover\:underline:hover {
+  color: #124C73;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Accessibility: Respect Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+}
+
+/* Certificate styles for printing */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}

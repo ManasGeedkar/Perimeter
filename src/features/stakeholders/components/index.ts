@@ -1,0 +1,2 @@
+// Stakeholders domain components
+export {};

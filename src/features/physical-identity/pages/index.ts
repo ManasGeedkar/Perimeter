@@ -1,0 +1,2 @@
+// Physical identity pages
+export {};

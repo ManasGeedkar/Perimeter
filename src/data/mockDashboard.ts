@@ -1,0 +1,66 @@
+import { DashboardMetrics } from '../types';
+
+export const mockDashboardData: DashboardMetrics = {
+  totalInstruments: 12482,
+  pendingApplications: 324,
+  verifiedInstruments: 10921,
+  expiringSoon: 184,
+  expiredCertificates: 97,
+  scheduledToday: 42,
+  monthlyTrends: [
+    { month: 'Oct 25', verified: 940, scheduled: 980, failed: 28 },
+    { month: 'Nov 25', verified: 1020, scheduled: 1060, failed: 31 },
+    { month: 'Dec 25', verified: 1150, scheduled: 1210, failed: 36 },
+    { month: 'Jan 26', verified: 980, scheduled: 1040, failed: 24 },
+    { month: 'Feb 26', verified: 1090, scheduled: 1140, failed: 29 },
+    { month: 'Mar 26', verified: 1280, scheduled: 1350, failed: 41 },
+    { month: 'Apr 26', verified: 1110, scheduled: 1170, failed: 33 },
+    { month: 'May 26', verified: 1240, scheduled: 1300, failed: 38 },
+    { month: 'Jun 26', verified: 1350, scheduled: 1410, failed: 42 },
+    { month: 'Jul 26', verified: 1190, scheduled: 1250, failed: 35 },
+    { month: 'Aug 26', verified: 1310, scheduled: 1390, failed: 39 },
+    { month: 'Sep 26', verified: 1420, scheduled: 1510, failed: 45 },
+  ],
+  statusDistribution: [
+    { name: 'Verified', value: 10921, color: '#2EAD7B' },
+    { name: 'Pending', value: 324, color: '#1769AA' },
+    { name: 'Scheduled', value: 420, color: '#38BDF8' },
+    { name: 'In Verification', value: 216, color: '#818CF8' },
+    { name: 'Expiring Soon', value: 184, color: '#E9A23B' },
+    { name: 'Expired', value: 97, color: '#D9534F' },
+    { name: 'Failed / Rejected', value: 72, color: '#94A3B8' },
+    { name: 'Identification Pending', value: 48, color: '#F59E0B' },
+  ],
+  instrumentTypeDistribution: [
+    { type: 'Electronic Weighing Scale', count: 5820 },
+    { type: 'Platform Scale', count: 2410 },
+    { type: 'Fuel Dispenser', count: 1890 },
+    { type: 'Weighbridge', count: 1140 },
+    { type: 'Analytical Balance', count: 680 },
+    { type: 'Mechanical Scale', count: 340 },
+    { type: 'Measuring Instrument', count: 202 },
+  ],
+  stateWiseActivity: [
+    { state: 'Madhya Pradesh', count: 2450, verified: 2280 },
+    { state: 'Maharashtra', count: 2180, verified: 2010 },
+    { state: 'Karnataka', count: 1890, verified: 1740 },
+    { state: 'Gujarat', count: 1650, verified: 1530 },
+    { state: 'Tamil Nadu', count: 1420, verified: 1310 },
+    { state: 'Delhi NCR', count: 1240, verified: 1160 },
+    { state: 'Rajasthan', count: 980, verified: 890 },
+  ],
+  officerWorkload: [
+    { name: 'Rajesh Kumar (LMO-MP)', assigned: 18, completed: 142 },
+    { name: 'Ananya Deshmukh (LMO-MH)', assigned: 24, completed: 128 },
+    { name: 'Venkatesh Rao (LMO-KA)', assigned: 16, completed: 165 },
+    { name: 'Dr. Priya Sharma (LMO-DL)', assigned: 14, completed: 98 },
+    { name: 'Jignesh Trivedi (LMO-GJ)', assigned: 28, completed: 112 },
+    { name: 'K. Balaji (LMO-TN)', assigned: 12, completed: 134 },
+    { name: 'Vikramaditya (LMO-RJ)', assigned: 21, completed: 89 },
+  ],
+  passFailData: [
+    { name: 'Passed & Stamped', value: 10921, color: '#2EAD7B' },
+    { name: 'Failed / Rejected', value: 382, color: '#D9534F' },
+    { name: 'Needs Re-calibration', value: 240, color: '#E9A23B' }
+  ]
+};
