@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal } from '../../../components/common/Modal';
+import { ImageCaptureUpload } from '../../../components/common/ImageCaptureUpload';
 import { instrumentService } from '../api';
 import { Instrument } from '../types';
 
@@ -30,6 +31,8 @@ export const RegisterInstrumentModal: React.FC<RegisterInstrumentModalProps> = (
   const [district, setDistrict] = useState('Indore');
   const [state, setState] = useState('Madhya Pradesh');
   const [pincode, setPincode] = useState('452001');
+
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -260,6 +263,13 @@ export const RegisterInstrumentModal: React.FC<RegisterInstrumentModalProps> = (
               />
             </div>
           </div>
+        </div>
+        <div className="pt-2">
+          <ImageCaptureUpload
+            label="Instrument Photo (Optional)"
+            onImageSelected={(file) => setPhotoFile(file as File)}
+            onImageRemoved={() => setPhotoFile(null)}
+          />
         </div>
 
         <div className="pt-3 flex justify-end gap-2 border-t border-[#DCEAF4]">

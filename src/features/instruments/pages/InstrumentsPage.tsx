@@ -237,7 +237,7 @@ export const InstrumentsPage: React.FC = () => {
                 <tr
                   key={inst.id}
                   className="hover:bg-[#EDF8FE]/80 transition-colors cursor-pointer group"
-                  onClick={() => navigate(`/instruments/${inst.id}`)}
+                  onClick={() => navigate(`/admin/instruments/${inst.id}`)}
                 >
                   <td className="py-3.5 px-4 font-mono font-bold text-[#1E75AC]">
                     {inst.id}
@@ -302,7 +302,7 @@ export const InstrumentsPage: React.FC = () => {
 
                   <td className="py-3.5 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                     <button
-                      onClick={() => navigate(`/instruments/${inst.id}`)}
+                      onClick={() => navigate(`/admin/instruments/${inst.id}`)}
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-[#CFE5F5] hover:bg-[#EDF8FE] text-[#123F63] font-bold text-[11px] transition-colors shadow-xs"
                     >
                       <Eye className="h-3 w-3 text-[#1E75AC]" />

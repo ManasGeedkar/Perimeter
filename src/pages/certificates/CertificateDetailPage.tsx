@@ -8,7 +8,10 @@ import {
   CheckCircle2,
   AlertTriangle,
   ExternalLink,
+  Download,
 } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { certificateService } from '../../services/certificateService';
 import { Certificate } from '../../types';
 import { StatusBadge } from '../../components/common/StatusBadge';
@@ -22,6 +25,8 @@ export const CertificateDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const [cert, setCert] = useState<Certificate | null>(null);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -55,8 +60,48 @@ export const CertificateDetailPage: React.FC = () => {
     window.print();
   };
 
+  const handleDownload = async () => {
+    if (!cert) return;
+    setDownloading(true);
+    setDownloadError(null);
+    try {
+      const element = document.getElementById('printable-certificate');
+      if (!element) throw new Error('Certificate element not found');
+
+      const canvas = await html2canvas(element, { 
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Certificate-${cert.id}.pdf`);
+    } catch (err: any) {
+      setDownloadError(err.message || 'Failed to generate PDF download.');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-200 font-sans">
+      {downloadError && (
+        <div className="no-print p-3 rounded-xl bg-[#FCECEC] border border-[#F8C8C6] flex items-start gap-2 text-xs">
+          <AlertTriangle className="h-4 w-4 text-[#A62F2C] shrink-0" />
+          <span className="font-bold text-[#A62F2C]">{downloadError}</span>
+        </div>
+      )}
+
       {/* Top Header Controls (Hidden on print) */}
       <div className="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-4 card-greeting p-6 rounded-3xl shadow-soft-card">
         <div className="flex items-center gap-3">
@@ -95,6 +140,15 @@ export const CertificateDetailPage: React.FC = () => {
           </Link>
 
           <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-white hover:bg-[#EDF8FE] hover:border-[#2F8FCC] active:scale-[0.98] text-[#123F63] border border-[#CFE5F5] px-5 py-2.5 text-xs font-bold shadow-soft transition-all cursor-pointer disabled:opacity-50"
+          >
+            <Download className="h-4 w-4 text-[#2F8FCC]" />
+            <span>{downloading ? 'Generating PDF...' : 'Download PDF'}</span>
+          </button>
+
+          <button
             onClick={handlePrint}
             className="inline-flex items-center gap-1.5 rounded-xl bg-[#2F8FCC] hover:bg-[#1E75AC] active:scale-[0.98] text-white px-5 py-2.5 text-xs font-bold shadow-soft transition-all cursor-pointer"
           >
@@ -105,7 +159,7 @@ export const CertificateDetailPage: React.FC = () => {
       </div>
 
       {/* Official Certificate Preview Sheet */}
-      <div className="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-3xl border border-[#CFE5F5] shadow-soft-lg text-[#123F63] space-y-6 relative overflow-hidden">
+      <div id="printable-certificate" className="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-3xl border border-[#CFE5F5] shadow-soft-lg text-[#123F63] space-y-6 relative overflow-hidden">
         {/* Subtle Watermark */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
           <ShieldCheck className="w-[500px] h-[500px] text-[#123F63]" />

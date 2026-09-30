@@ -11,6 +11,8 @@ import { certificateService } from '../../services/certificateService';
 import { Certificate, CertificateStatus } from '../../types';
 import { useTranslation } from '../../i18n';
 import { LanguageSwitcher } from '../../components/common/LanguageSwitcher';
+import { QRScanner } from '../../components/common/QRScanner';
+import { Camera } from 'lucide-react';
 
 export const PublicCertificateVerifyPage: React.FC = () => {
   const { certificateId } = useParams<{ certificateId?: string }>();
@@ -20,19 +22,45 @@ export const PublicCertificateVerifyPage: React.FC = () => {
   const [status, setStatus] = useState<CertificateStatus | null>(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [scanError, setScanError] = useState<string | null>(null);
 
   const runVerification = async (targetId: string) => {
     if (!targetId.trim()) return;
     setLoading(true);
     setStatus(null);
+    setScanError(null);
     try {
-      const res = await certificateService.verifyCertificate(targetId);
+      // Validate perimeter certificate format if scanned from QR
+      const isUrl = targetId.startsWith('http');
+      let extractedId = targetId;
+      
+      if (isUrl) {
+        const parts = targetId.split('/');
+        extractedId = parts[parts.length - 1];
+      }
+      
+      const res = await certificateService.verifyCertificate(extractedId);
+      
+      if (!res) {
+        setScanError('This QR code is not a valid Perimeter certificate.');
+        return;
+      }
+      
+      setQuery(extractedId);
       setStatus(res.status);
       setMessage(res.message);
       setCert(res.certificate || null);
+      setShowScanner(false);
+    } catch (err) {
+      setScanError('This QR code is not a valid Perimeter certificate.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleScanSuccess = (decodedText: string) => {
+    runVerification(decodedText);
   };
 
   useEffect(() => {
@@ -102,6 +130,52 @@ export const PublicCertificateVerifyPage: React.FC = () => {
               {loading ? `${t('action.search')}...` : t('verify.searchButton')}
             </button>
           </form>
+
+          <div className="pt-4 border-t border-[#CFE5F5]">
+            {!showScanner ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setShowScanner(true);
+                  setScanError(null);
+                  setStatus(null);
+                }}
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white border-2 border-dashed border-[#2F8FCC] text-[#1E75AC] font-bold text-xs sm:text-sm shadow-sm hover:bg-[#EDF8FE] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Camera className="h-4 w-4" />
+                <span>Open Camera Scanner</span>
+              </button>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-[#123F63] flex items-center gap-2">
+                    <Camera className="h-4 w-4 text-[#2F8FCC]" />
+                    Scan Certificate QR
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowScanner(false)}
+                    className="text-xs font-bold text-[#D95C59] hover:text-red-700 cursor-pointer"
+                  >
+                    Close Scanner
+                  </button>
+                </div>
+
+                {scanError && (
+                  <div className="p-3 rounded-xl bg-[#FCECEC] border border-[#F8C8C6] flex items-start gap-2 text-xs">
+                    <AlertTriangle className="h-4 w-4 text-[#A62F2C] shrink-0" />
+                    <span className="font-bold text-[#A62F2C]">{scanError}</span>
+                  </div>
+                )}
+
+                <QRScanner
+                  onScanSuccess={handleScanSuccess}
+                  onClose={() => setShowScanner(false)}
+                  className="w-full aspect-[4/3] sm:aspect-video rounded-2xl shadow-inner border border-[#CFE5F5]"
+                />
+              </div>
+            )}
+          </div>
 
           {/* Quick Demo Test Pills */}
           <div className="pt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-[#627B94]">

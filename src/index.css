@@ -385,11 +385,31 @@ a.hover\:underline:hover {
   body {
     background: white !important;
     color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
+  
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-certificate, #printable-certificate * {
+    visibility: visible;
+  }
+
+  #printable-certificate {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none !important;
+    border: none !important;
+    background: white !important;
+  }
+
   .no-print {
     display: none !important;
-  }
-  .print-only {
-    display: block !important;
   }
 }

@@ -180,7 +180,7 @@ export const ApplicationsPage: React.FC = () => {
                 <tr
                   key={app.id}
                   className="hover:bg-[#EDF8FE]/80 transition-colors cursor-pointer group"
-                  onClick={() => navigate(`/applications/${app.id}`)}
+                  onClick={() => navigate(`/admin/applications/${app.id}`)}
                 >
                   <td className="py-3.5 px-4">
                     <div className="font-mono font-bold text-[#1E75AC]">
@@ -239,7 +239,7 @@ export const ApplicationsPage: React.FC = () => {
 
                   <td className="py-3.5 px-4 text-right space-x-1" onClick={(e) => e.stopPropagation()}>
                     <button
-                      onClick={() => navigate(`/applications/${app.id}`)}
+                      onClick={() => navigate(`/admin/applications/${app.id}`)}
                       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-[#CFE5F5] hover:bg-[#EDF8FE] text-[#123F63] font-bold text-[11px] transition-colors shadow-xs"
                     >
                       <Eye className="h-3 w-3 text-[#1E75AC]" />
@@ -268,7 +268,7 @@ export const ApplicationsPage: React.FC = () => {
       <NewApplicationModal
         isOpen={newAppModalOpen}
         onClose={() => setNewAppModalOpen(false)}
-        onSuccess={(appId) => navigate(`/applications/${appId}`)}
+        onSuccess={(appId) => navigate(`/admin/applications/${appId}`)}
       />
 
       {/* Assign Officer Modal */}

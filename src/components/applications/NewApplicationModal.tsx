@@ -17,6 +17,7 @@ import {
   ShieldAlert,
   Sparkles,
 } from 'lucide-react';
+import { ImageCaptureUpload } from '../common/ImageCaptureUpload';
 
 interface NewApplicationModalProps {
   isOpen: boolean;
@@ -56,10 +57,7 @@ export const NewApplicationModal: React.FC<NewApplicationModalProps> = ({
   const [verificationType, setVerificationType] = useState<VerificationType>('Periodic Verification');
   const [preferredDate, setPreferredDate] = useState('2026-10-05');
   const [remarks, setRemarks] = useState('');
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([
-    'gst_registration_copy.pdf',
-    'previous_verification_certificate.pdf',
-  ]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedAppId, setSubmittedAppId] = useState<string | null>(null);
@@ -97,7 +95,7 @@ export const NewApplicationModal: React.FC<NewApplicationModalProps> = ({
         verificationType,
         preferredDate,
         hasDamagedPlate,
-        supportingDocs: uploadedFiles,
+        supportingDocs: uploadedFiles.map(f => f.name),
         remarks: remarks || (hasDamagedPlate ? 'Identification pending - damaged plate inspection requested' : 'Standard periodic verification'),
       });
 
@@ -424,29 +422,10 @@ export const NewApplicationModal: React.FC<NewApplicationModalProps> = ({
           {/* STEP 3: Supporting Documents & Photos */}
           {currentStep === 3 && (
             <div className="space-y-4">
-              <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center bg-slate-50/50 dark:bg-slate-900/40">
-                <Upload className="mx-auto h-8 w-8 text-[#1769AA] dark:text-[#38BDF8]" />
-                <p className="mt-2 text-xs font-bold text-[#17324D] dark:text-slate-100">
-                  {hasDamagedPlate
-                    ? 'Upload Photos of Instrument & Damaged Nameplate'
-                    : 'Upload Supporting Documents'}
-                </p>
-                <p className="text-[11px] text-slate-500">
-                  PDF, PNG, JPG up to 10MB (Trade license, Purchase Invoice, Nameplate photo)
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const sample = hasDamagedPlate
-                      ? 'damaged_nameplate_photo_closeup.jpg'
-                      : `verification_doc_${Date.now()}.pdf`;
-                    setUploadedFiles([...uploadedFiles, sample]);
-                  }}
-                  className="mt-3 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 shadow-xs"
-                >
-                  + Add Simulated File
-                </button>
-              </div>
+              <ImageCaptureUpload
+                label={hasDamagedPlate ? 'Upload Photos of Instrument & Damaged Nameplate' : 'Upload Supporting Documents'}
+                onImageSelected={(file) => setUploadedFiles([...uploadedFiles, file as File])}
+              />
 
               <div>
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
@@ -459,11 +438,11 @@ export const NewApplicationModal: React.FC<NewApplicationModalProps> = ({
                       className="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs"
                     >
                       <span className="font-mono text-[11px] text-slate-700 dark:text-slate-300">
-                        {f}
+                        {f.name}
                       </span>
                       <button
                         onClick={() => setUploadedFiles(uploadedFiles.filter((_, i) => i !== idx))}
-                        className="text-red-500 hover:text-red-700 text-[11px] font-bold"
+                        className="text-red-500 hover:text-red-700 text-[11px] font-bold cursor-pointer"
                       >
                         Remove
                       </button>

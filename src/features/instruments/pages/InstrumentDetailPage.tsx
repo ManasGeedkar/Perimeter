@@ -48,7 +48,7 @@ export const InstrumentDetailPage: React.FC = () => {
         <h2 className="text-xl font-bold">Instrument Not Found</h2>
         <p className="text-xs text-slate-500">No instrument registered with ID: {id}</p>
         <button
-          onClick={() => navigate('/instruments')}
+          onClick={() => navigate('/admin/instruments')}
           className="rounded-2xl bg-[#1769AA] text-white px-5 py-2 text-xs font-bold"
         >
           Back to Instruments
@@ -70,7 +70,7 @@ export const InstrumentDetailPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 card-greeting p-6 rounded-3xl border border-[#CCE3F3] shadow-soft-card">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate('/instruments')}
+            onClick={() => navigate('/admin/instruments')}
             className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white border border-[#CFE5F5] hover:bg-[#EDF8FE] text-[#123F63] transition-colors cursor-pointer"
           >
             <ArrowLeft className="h-5 w-5" />

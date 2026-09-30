@@ -30,7 +30,9 @@ import { OfficerHistoryPage } from '../../pages/officer/OfficerHistoryPage';
 // Admin Area
 import { AdminDashboardPage } from '../../pages/admin/AdminDashboardPage';
 import { ApplicationsPage } from '../../pages/applications/ApplicationsPage';
+import { ApplicationDetailPage } from '../../pages/applications/ApplicationDetailPage';
 import { InstrumentsPage } from '../../features/instruments/pages/InstrumentsPage';
+import { InstrumentDetailPage } from '../../features/instruments/pages/InstrumentDetailPage';
 import { OfficersPage } from '../../features/stakeholders/pages/OfficersPage';
 import { ReportsPage } from '../../pages/reports/ReportsPage';
 import { NotificationsPage } from '../../pages/notifications/NotificationsPage';
@@ -46,6 +48,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="/verify" element={<PublicCertificateVerifyPage />} />
         <Route path="/verify/:certificateId" element={<PublicCertificateVerifyPage />} />
         <Route path="/public/verify/:certificateId" element={<PublicCertificateVerifyPage />} />
+        <Route path="/certificates/verify" element={<PublicCertificateVerifyPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
 
@@ -70,7 +73,9 @@ export const AppRoutes: React.FC = () => {
           {/* 3. ADMIN JOURNEY */}
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/applications" element={<ApplicationsPage />} />
+          <Route path="/admin/applications/:id" element={<ApplicationDetailPage />} />
           <Route path="/admin/instruments" element={<InstrumentsPage />} />
+          <Route path="/admin/instruments/:id" element={<InstrumentDetailPage />} />
           <Route path="/admin/officers" element={<OfficersPage />} />
           <Route path="/admin/reports" element={<ReportsPage />} />
 
@@ -82,7 +87,9 @@ export const AppRoutes: React.FC = () => {
           <Route path="/verification" element={<OfficerInspectionWorkspacePage />} />
           <Route path="/verification/:id" element={<OfficerInspectionWorkspacePage />} />
           <Route path="/certificates" element={<Navigate to="/my-certificates" replace />} />
+          <Route path="/certificates/verify" element={<PublicCertificateVerifyPage />} />
           <Route path="/certificates/:id" element={<CertificateDetailPage />} />
+          <Route path="/reports" element={<Navigate to="/admin/reports" replace />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
 

@@ -17,11 +17,19 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '../../i18n';
 import { LanguageSwitcher } from '../../components/common/LanguageSwitcher';
+import { mockApplications } from '../../data/mockApplications';
+import { mockCertificates } from '../../data/mockCertificates';
+import { mockInstruments } from '../../data/mockInstruments';
+import { ImageCaptureUpload } from '../../components/common/ImageCaptureUpload';
 
 export const OfficerInspectionWorkspacePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const activeApp = mockApplications.find((a) => a.id === (id || 'APP-2026-000182')) || mockApplications[0];
+  const activeInst = mockInstruments.find((i) => i.id === activeApp.instrumentId);
+  const matchedCert = mockCertificates.find((c) => c.instrumentId === activeApp.instrumentId) || mockCertificates[0];
 
   // Mobile checklist state
   const [physicalCondition, setPhysicalCondition] = useState<'Good' | 'Damaged'>('Good');
@@ -35,9 +43,7 @@ export const OfficerInspectionWorkspacePage: React.FC = () => {
   const [errorDeviation, setErrorDeviation] = useState('+0.002 kg');
 
   // Photos
-  const [photos, setPhotos] = useState<string[]>([
-    'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80',
-  ]);
+  const [photos, setPhotos] = useState<File[]>([]);
 
   // Remarks
   const [remarks, setRemarks] = useState(
@@ -52,12 +58,6 @@ export const OfficerInspectionWorkspacePage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [draftSaved, setDraftSaved] = useState(false);
 
-  const handleAddMockPhoto = () => {
-    setPhotos([
-      ...photos,
-      'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=400&q=80',
-    ]);
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,7 +89,7 @@ export const OfficerInspectionWorkspacePage: React.FC = () => {
           <div className="bg-white rounded-3xl p-6 border border-[#E8E3D9] shadow-soft-card text-left space-y-3 font-mono text-xs">
             <div className="flex justify-between">
               <span className="text-[#718295]">{t('dashboard.applicationId')}:</span>
-              <span className="font-bold text-[#16466F]">{id || 'APP-2026-000182'}</span>
+              <span className="font-bold text-[#16466F]">{activeApp.id}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-[#718295]">{t('inspect.finalDecision')}:</span>
@@ -104,7 +104,7 @@ export const OfficerInspectionWorkspacePage: React.FC = () => {
             {result === 'PASS' && (
               <div className="flex justify-between">
                 <span className="text-[#718295]">{t('cert.certNo')}:</span>
-                <span className="font-bold text-[#17689A]">CERT-2026-000841</span>
+                <span className="font-bold text-[#17689A]">{matchedCert.certificateNumber}</span>
               </div>
             )}
           </div>
@@ -112,12 +112,19 @@ export const OfficerInspectionWorkspacePage: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             {result === 'PASS' ? (
               <Link
-                to="/my-certificates/CERT-2026-000841"
+                to={`/my-certificates/${matchedCert.id}`}
                 className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#17689A] hover:bg-[#16466F] text-white font-bold text-xs shadow-soft transition-colors"
               >
                 {t('action.downloadCertificate')}
               </Link>
-            ) : null}
+            ) : (
+              <Link
+                to="/officer/inspections"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#D95C59] hover:bg-[#A62F2C] text-white font-bold text-xs shadow-soft transition-colors"
+              >
+                Return to Inspections
+              </Link>
+            )}
             <Link
               to="/officer/dashboard"
               className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white border border-[#E8E3D9] text-[#183B59] font-bold text-xs hover:bg-[#FAF7F0] shadow-soft-card"
@@ -165,14 +172,14 @@ export const OfficerInspectionWorkspacePage: React.FC = () => {
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <span className="font-mono text-xs font-bold text-[#1E75AC] bg-[#D5EEFB] border border-[#BDE0F7] px-2.5 py-1 rounded-lg">
-                {id || 'APP-2026-000182'}
+                {activeApp.id}
               </span>
               <h2 className="font-outfit text-xl font-bold text-[#123F63]">
-                Electronic Weighing Scale (30 kg)
+                {activeApp.instrumentType}
               </h2>
               <p className="text-xs text-[#527290] flex items-center gap-1.5">
                 <Building2 className="h-3.5 w-3.5 text-[#1E75AC]" />
-                ABC Traders (Mr. Rahul Verma)
+                {activeApp.businessName} ({activeApp.applicantName})
               </p>
             </div>
             <div className="h-10 w-10 rounded-2xl bg-[#D5EEFB] text-[#1E75AC] border border-[#BDE0F7] flex items-center justify-center shrink-0 shadow-xs">
@@ -183,19 +190,19 @@ export const OfficerInspectionWorkspacePage: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-[#CFE5F5] text-xs">
             <div>
               <span className="text-[#627B94] block text-[10px] uppercase font-bold">{t('apply.manufacturer')}</span>
-              <span className="font-semibold text-[#123F63]">Avery Weigh-Tronix</span>
+              <span className="font-semibold text-[#123F63]">{activeInst?.manufacturer || 'Essae-Teraoka Ltd.'}</span>
             </div>
             <div>
               <span className="text-[#627B94] block text-[10px] uppercase font-bold">{t('apply.model')}</span>
-              <span className="font-semibold text-[#123F63]">ProScale-30D</span>
+              <span className="font-semibold text-[#123F63]">{activeInst?.model || 'DS-215 High Precision'}</span>
             </div>
             <div>
               <span className="text-[#627B94] block text-[10px] uppercase font-bold">{t('cert.serialNo')}</span>
-              <span className="font-mono font-semibold text-[#123F63]">AV-2024-9981</span>
+              <span className="font-mono font-semibold text-[#123F63]">{activeInst?.serialNumber || 'ES-2024-99824'}</span>
             </div>
             <div>
               <span className="text-[#627B94] block text-[10px] uppercase font-bold">{t('cert.address')}</span>
-              <span className="font-semibold text-[#123F63]">Sarafa Bazar, Indore</span>
+              <span className="font-semibold text-[#123F63] truncate block">{activeApp.address}</span>
             </div>
           </div>
         </div>
@@ -376,31 +383,13 @@ export const OfficerInspectionWorkspacePage: React.FC = () => {
                 </div>
                 <span>{t('inspect.capturePhotos')}</span>
               </h3>
-              <span className="text-xs text-[#627B94]">{photos.length} captured</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {photos.map((url, idx) => (
-                <div
-                  key={idx}
-                  className="relative rounded-2xl overflow-hidden aspect-video border border-[#E0DCFB] shadow-xs group"
-                >
-                  <img src={url} alt={`Evidence ${idx + 1}`} className="w-full h-full object-cover" />
-                  <span className="absolute bottom-1.5 left-1.5 text-[9px] font-bold bg-black/60 text-white px-2 py-0.5 rounded">
-                    Photo #{idx + 1}
-                  </span>
-                </div>
-              ))}
-
-              <button
-                type="button"
-                onClick={handleAddMockPhoto}
-                className="border-2 border-dashed border-[#CCE2F5] bg-white/70 rounded-2xl aspect-video flex flex-col items-center justify-center gap-1 text-[#627B94] hover:border-[#2F8FCC] hover:bg-white transition-all cursor-pointer"
-              >
-                <Camera className="h-5 w-5 text-[#2F8FCC]" />
-                <span className="text-[11px] font-bold text-[#123F63]">{t('inspect.addPhoto')}</span>
-              </button>
-            </div>
+            <ImageCaptureUpload
+              label="Field Inspection Photo"
+              onImageSelected={(file) => setPhotos([file as File])}
+              onImageRemoved={() => setPhotos([])}
+            />
           </div>
 
           {/* SECTION 4: Remarks */}

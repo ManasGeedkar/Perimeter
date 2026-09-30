@@ -19,6 +19,7 @@ import {
 import { applicationService } from '../../services/applicationService';
 import { useTranslation } from '../../i18n';
 import { LanguageSwitcher } from '../../components/common/LanguageSwitcher';
+import { ImageCaptureUpload } from '../../components/common/ImageCaptureUpload';
 
 export const StartInspectionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -46,10 +47,7 @@ export const StartInspectionPage: React.FC = () => {
   const [district, setDistrict] = useState('Indore');
 
   // Step 4: Uploads & Docs
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([
-    'instrument_front_photo.jpg',
-    'shop_trade_license.pdf',
-  ]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [remarks, setRemarks] = useState('');
 
   // Submission state
@@ -82,7 +80,7 @@ export const StartInspectionPage: React.FC = () => {
         verificationType: 'Periodic Verification',
         preferredDate: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
         hasDamagedPlate: noSerialNumber,
-        supportingDocs: uploadedFiles,
+        supportingDocs: uploadedFiles.map(f => f.name),
         remarks: remarks || (noSerialNumber ? 'Serial plate unavailable - field tagging requested' : 'Standard online verification request'),
       });
 
@@ -480,28 +478,10 @@ export const StartInspectionPage: React.FC = () => {
                     Upload clear photos of your instrument, trade license, or past verification stamp if available.
                   </p>
 
-                  <div className="border-2 border-dashed border-[#CFE5F5] rounded-3xl p-8 text-center bg-[#F0F8FD] space-y-3">
-                    <div className="h-14 w-14 rounded-full bg-white text-[#1E75AC] border border-[#CFE5F5] flex items-center justify-center shadow-soft mx-auto">
-                      <Upload className="h-7 w-7" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm text-[#123F63]">
-                        Drag and drop instrument photos here
-                      </p>
-                      <p className="text-[#627B94] text-[11px] mt-0.5">JPG, PNG, WEBP or PDF up to 10MB each</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const newDoc = noSerialNumber ? 'damaged_plate_closeup.jpg' : `instrument_stamp_${Date.now()}.pdf`;
-                        setUploadedFiles([...uploadedFiles, newDoc]);
-                      }}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#2F8FCC] hover:bg-[#1E75AC] text-white text-xs font-bold shadow-soft transition-colors cursor-pointer"
-                    >
-                      <Upload className="h-3.5 w-3.5" />
-                      <span>Browse Files</span>
-                    </button>
-                  </div>
+                  <ImageCaptureUpload
+                    label="Instrument Photo / Document"
+                    onImageSelected={(file) => setUploadedFiles([...uploadedFiles, file as File])}
+                  />
 
                   <div className="space-y-1.5 pt-2">
                     <span className="font-semibold text-[#123F63] block">
@@ -512,7 +492,7 @@ export const StartInspectionPage: React.FC = () => {
                         key={i}
                         className="flex items-center justify-between p-3 rounded-2xl bg-white border border-[#CFE5F5]"
                       >
-                        <span className="font-mono text-xs text-[#123F63]">{file}</span>
+                        <span className="font-mono text-xs text-[#123F63]">{file.name}</span>
                         <button
                           type="button"
                           onClick={() => setUploadedFiles(uploadedFiles.filter((_, idx) => idx !== i))}

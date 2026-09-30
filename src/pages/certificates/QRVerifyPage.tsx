@@ -19,11 +19,13 @@ import {
 import { certificateService } from '../../services/certificateService';
 import { Certificate, CertificateStatus } from '../../types';
 import { StatusBadge } from '../../components/common/StatusBadge';
+import { QRScanner } from '../../components/common/QRScanner';
 
 export const QRVerifyPage: React.FC = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
-  const [scanning, setScanning] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [scanError, setScanError] = useState<string | null>(null);
   const [result, setResult] = useState<{
     status: CertificateStatus;
     certificate?: Certificate;
@@ -37,21 +39,39 @@ export const QRVerifyPage: React.FC = () => {
 
     setLoading(true);
     setResult(null);
+    setScanError(null);
+    
     try {
-      const res = await certificateService.verifyCertificate(target);
+      // Validate perimeter certificate format if scanned from QR
+      const isUrl = target.startsWith('http');
+      let extractedId = target;
+      
+      if (isUrl) {
+        // e.g. http://localhost:5173/public/verify/CERT-MP-2026-000821
+        const parts = target.split('/');
+        extractedId = parts[parts.length - 1];
+      }
+      
+      const res = await certificateService.verifyCertificate(extractedId);
+      
+      // If it fails to verify and it was a scan, show safe error message instead of crashing
+      if (!res) {
+        setScanError('This QR code is not a valid Perimeter certificate.');
+        return;
+      }
+      
+      setQuery(extractedId);
       setResult(res);
+      setShowScanner(false);
+    } catch (err) {
+      setScanError('This QR code is not a valid Perimeter certificate.');
     } finally {
       setLoading(false);
     }
   };
 
-  const simulateCameraScan = (sampleId: string) => {
-    setScanning(true);
-    setTimeout(() => {
-      setScanning(false);
-      setQuery(sampleId);
-      handleVerify(sampleId);
-    }, 800);
+  const handleScanSuccess = (decodedText: string) => {
+    handleVerify(decodedText);
   };
 
   return (
@@ -104,48 +124,50 @@ export const QRVerifyPage: React.FC = () => {
           </div>
         </form>
 
-        {/* Quick Demo Test Presets */}
-        <div className="pt-2 border-t border-[#DCEAF4] space-y-2">
-          <p className="text-[11px] font-bold text-[#527290] uppercase tracking-wider">
-            Simulate QR Code Scans:
-          </p>
-          <div className="flex flex-wrap gap-2 text-xs">
+        <div className="pt-4 border-t border-[#DCEAF4]">
+          {!showScanner ? (
             <button
               type="button"
-              onClick={() => simulateCameraScan('CERT-MP-2026-000821')}
-              className="px-3 py-1.5 rounded-xl card-mint text-[#1E8E5A] border border-[#CDEFE0] font-mono text-[11px] hover:bg-[#D4F6E5] transition-colors flex items-center gap-1 cursor-pointer"
+              onClick={() => {
+                setShowScanner(true);
+                setScanError(null);
+                setResult(null);
+              }}
+              className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white border-2 border-dashed border-[#2F8FCC] text-[#1E75AC] font-bold text-sm shadow-sm hover:bg-[#EDF8FE] transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <CheckCircle2 className="h-3.5 w-3.5 text-[#1E8E5A]" />
-              <span>VALID: CERT-MP-2026-000821</span>
+              <Camera className="h-5 w-5" />
+              <span>Open Camera Scanner</span>
             </button>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-[#123F63] flex items-center gap-2">
+                  <Camera className="h-4 w-4 text-[#2F8FCC]" />
+                  Scan Certificate QR
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setShowScanner(false)}
+                  className="text-xs font-bold text-[#D95C59] hover:text-red-700 cursor-pointer"
+                >
+                  Close Scanner
+                </button>
+              </div>
 
-            <button
-              type="button"
-              onClick={() => simulateCameraScan('CERT-KA-2025-004921')}
-              className="px-3 py-1.5 rounded-xl card-amber text-[#B86C0B] border border-[#FCE3BA] font-mono text-[11px] hover:bg-[#FEEDC8] transition-colors flex items-center gap-1 cursor-pointer"
-            >
-              <AlertTriangle className="h-3.5 w-3.5 text-[#B86C0B]" />
-              <span>EXPIRED: CERT-KA-2025-004921</span>
-            </button>
+              {scanError && (
+                <div className="p-3 rounded-xl bg-[#FCECEC] border border-[#F8C8C6] flex items-start gap-2 text-xs">
+                  <AlertTriangle className="h-4 w-4 text-[#A62F2C] shrink-0" />
+                  <span className="font-bold text-[#A62F2C]">{scanError}</span>
+                </div>
+              )}
 
-            <button
-              type="button"
-              onClick={() => simulateCameraScan('CERT-AP-2025-008119')}
-              className="px-3 py-1.5 rounded-xl bg-[#FDF0EF] text-[#C7493A] border border-[#FAD7D4] font-mono text-[11px] hover:bg-[#F9C7C2] transition-colors flex items-center gap-1 cursor-pointer"
-            >
-              <XCircle className="h-3.5 w-3.5 text-[#C7493A]" />
-              <span>REVOKED: CERT-AP-2025-008119</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => simulateCameraScan('FAKE-CERT-99999')}
-              className="px-3 py-1.5 rounded-xl card-sky text-[#1E75AC] border border-[#CFE5F5] font-mono text-[11px] hover:bg-[#E2F0F9] transition-colors flex items-center gap-1 cursor-pointer"
-            >
-              <ShieldAlert className="h-3.5 w-3.5 text-[#1E75AC]" />
-              <span>INVALID: FAKE-CERT-99999</span>
-            </button>
-          </div>
+              <QRScanner
+                onScanSuccess={handleScanSuccess}
+                onClose={() => setShowScanner(false)}
+                className="w-full aspect-[4/3] sm:aspect-video rounded-2xl shadow-inner border border-[#DCEAF4]"
+              />
+            </div>
+          )}
         </div>
       </div>
 

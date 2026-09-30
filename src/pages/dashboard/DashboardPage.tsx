@@ -148,7 +148,7 @@ export const DashboardPage: React.FC = () => {
           </button>
 
           <button
-            onClick={() => navigate('/reports')}
+            onClick={() => navigate('/admin/reports')}
             className="inline-flex items-center gap-2 rounded-2xl bg-white border border-[#CFE5F5] text-[#123F63] px-4 py-2.5 text-xs sm:text-sm font-bold shadow-xs hover:bg-[#EDF8FE] hover:border-[#2F8FCC] hover:text-[#123F63] active:scale-[0.98] transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-[#2F8FCC]"
           >
             <FileSpreadsheet className="h-4 w-4 text-[#1E75AC]" />
